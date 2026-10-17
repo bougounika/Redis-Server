@@ -12,11 +12,11 @@ Redis keeps all its data in the computer’s RAM.
 Redis uses a key-value structure.
 
 # Redis Used for:
-• Caching (Most Common): Instead of making your application slow down by constantly querying a heavy database for the same information, you store a copy of frequently accessed data in Redis. This drastically reduces website loading times.
-• Session Management: Storing temporary user data—like keeping a user logged in or holding items in an e-commerce shopping cart while they browse.
-• Real-time Leaderboards: Using its built-in sorted structures to instantly compute rankings or high scores for gaming or trading apps.
-• Message Brokers (Pub/Sub): Passing messages instantly between different microservices or parts of an application (e.g., real-time chat apps).
-• Geospatial Indexes: Storing latitude/longitude coordinates to quickly find "nearby" locations, which is how ride-sharing apps track vehicles.
+• **Caching (Most Common):** Instead of making your application slow down by constantly querying a heavy database for the same information, you store a copy of frequently accessed data in Redis. This drastically reduces website loading times.
+• **Session Management:** Storing temporary user data—like keeping a user logged in or holding items in an e-commerce shopping cart while they browse.
+• **Real-time Leaderboards:** Using its built-in sorted structures to instantly compute rankings or high scores for gaming or trading apps.
+•** Message Brokers (Pub/Sub):** Passing messages instantly between different microservices or parts of an application (e.g., real-time chat apps).
+• **Geospatial Indexes:** Storing latitude/longitude coordinates to quickly find "nearby" locations, which is how ride-sharing apps track vehicles.
 
 
 
