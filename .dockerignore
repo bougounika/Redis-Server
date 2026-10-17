@@ -1,0 +1,6 @@
+# Ignore local secrets and git metadata
+.git
+.gitignore
+.env
+backups/
+README.md

@@ -1,0 +1,14 @@
+# Secrets and Credentials
+.env
+.env.*
+!.env.example
+
+# Local Backups directory
+backups/
+/backups/
+
+# Docker Local Data Volumes
+.docker-data/
+*.log
+.vscode/
+.idea/

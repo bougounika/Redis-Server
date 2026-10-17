@@ -1,0 +1,60 @@
+services:
+  redis:
+    # image: redis:8.10-alpine
+    image: redis:7.2-alpine
+    container_name: redis_server
+    hostname: ${REDIS_HOST}
+    # Launches the background seeder thread first, then immediately starts the Redis engine
+
+    # Add this block to your compose/redis-server.yml under the redis service:
+    ports:
+      - "${REDIS_PORT}:6379"
+
+    command: >
+      sh -c "sh /usr/local/bin/init.sh & 
+             exec redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}"
+
+    volumes:
+      - redis_data:/data
+      - ../config/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ../config/initdb/init.sh:/usr/local/bin/init.sh:ro
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - frontend_proxy_redis
+    
+    # Verifies internal database operational integrity
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis_ui
+    hostname: ${REDIS_UI_HOST}
+    environment:
+      - RIPORT=5540 
+      # - RIPORT=8001
+      - RI_PROXY_ENABLE=true
+      - RI_PROXY_PATH=/redis_ui
+    networks:
+      - backend_isolated_redis
+      - frontend_proxy_redis
+    depends_on:
+      redis:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always

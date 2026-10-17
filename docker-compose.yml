@@ -1,0 +1,15 @@
+name: ${COMPOSE_PROJECT_NAME}
+
+include:
+  - compose/redis-server.yml
+  - compose/redis-backup.yml
+  - compose/web-server.yml
+
+networks:
+  backend_isolated_redis:
+    driver: bridge
+  frontend_proxy_redis:
+    driver: bridge
+
+volumes:
+  redis_data:

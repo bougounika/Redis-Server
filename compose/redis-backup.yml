@@ -1,0 +1,44 @@
+services:
+  redis-backup:
+    image: alpine:latest
+    container_name: redis_backup
+    hostname: ${REDIS_BACKUP_HOST}
+    user: root 
+    volumes:
+      - redis_data:/data:ro
+      - ../backups:/backups
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Starting modular snapshot backup loop..."
+        echo "0 2 * * * cp /data/appendonly.aof /backups/appendonly.aof.\$(date +\\%F_\\%H\\%M\\%S) 2>/dev/null || cp /data/dump.rdb /backups/dump.rdb.\$(date +\\%F_\\%H\\%M\\%S)" > /etc/periodic/daily/redis-backup
+        chmod +x /etc/periodic/daily/redis-backup
+        crond -f -l 2
+    networks:
+      - backend_isolated_redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+
+
+# To manually trigger a backup right now without waiting for the daily 2:00 AM automation script, 
+# you have two quick and safe methods.
+
+
+# # Method 1: The Quick Host Command (Recommended)
+# docker exec -it redis_server redis-cli -a 'Labasset1122!!' --no-auth-warning SAVE && \
+# docker exec -it redis_backup cp /data/dump.rdb /backups/manual_dump.$(date +%F_%H%M%S).rdb
+
+
+# # Method 2: Step-by-Step Manual Breakdown
+
+# # Step 1: Tell Redis to save its data to disk
+# docker exec -it redis_server redis-cli -a 'Labasset1122!!' --no-auth-warning SAVE
+
+# # Step 2: Use your backup sidecar to copy the file
+# docker exec -it redis_backup cp /data/dump.rdb /backups/manual_dump.rdb
+
